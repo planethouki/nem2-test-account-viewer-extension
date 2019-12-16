@@ -6,16 +6,24 @@
     "default_icon": "icon_19.png",
     "default_popup": "popup.html"
   },
-  "permissions": [
-    "storage",
-    "tabs"
+  "content_scripts": [
+    {
+      "matches": [
+        "file://*/*",
+        "http://*/*",
+        "https://*/*"
+      ],
+      "js": [
+        "contentscript.js"
+      ],
+      "run_at": "document_start",
+      "all_frames": true
+    }
   ],
-  "externally_connectable": {
-    "matches": [
-      "https://www.google.com/*"
-    ],
-    "ids": [
-      "*"
-    ]
-  }
+  "permissions": [
+    "storage"
+  ],
+  "web_accessible_resources": [
+    "inpage.js"
+  ]
 }
