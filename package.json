@@ -5,16 +5,22 @@
   "private": true,
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "webpack"
+    "build": "webpack",
+    "watch": "webpack --watch"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "bootstrap": "^4.4.1",
+    "bufferutil": "^4.0.1",
     "nem2-sdk": "^0.16.0",
     "post-message-stream": "^3.0.0",
     "react": "^16.12.0",
-    "react-dom": "^16.12.0"
+    "react-bootstrap": "^1.0.0-beta.16",
+    "react-dom": "^16.12.0",
+    "react-router-dom": "^5.1.2",
+    "utf-8-validate": "^5.0.2"
   },
   "devDependencies": {
     "@babel/core": "^7.7.5",

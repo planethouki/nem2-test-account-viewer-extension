@@ -1,38 +1,17 @@
 import React from 'react';
+import { Button, Overlay, Tooltip } from 'react-bootstrap';
+import background from '../backgroundFacade';
 
 export default class Account extends React.Component {
     constructor(props) {
         super(props);
-        const background = chrome.extension.getBackgroundPage();
-        const {address, endPoint} = background.popup.getAccountStaticInfo();
         this.state = {
             balance: '0',
             transactions: [],
-            address,
-            endPoint
+            address: background.getAddress().pretty(),
+            endPoint: background.getEndPoint()
         };
-        background.popup.getAccountInfo().then(({balance}) => {
-            const decimalPart = ("000000" + balance).substr(-6);
-            const integerPart = balance.substring(0, balance.length - 6);
-            this.setState({
-                balance: `${integerPart}.${decimalPart}`
-            })
-        });
-        background.popup.getTransactions().then(({transactions}) => {
-            this.setState({
-                transactions
-            })
-        });
-        this.onClickMoreTx = this.onClickMoreTx.bind(this);
         this.onClickCopyAddress = this.onClickCopyAddress.bind(this)
-    }
-
-    onClickMoreTx(event) {
-        event.preventDefault();
-        chrome.tabs.create({
-            url: `${this.state.endPoint}/account/${this.state.address.replace(/-/g, '')}/transactions`,
-            active: true,
-        })
     }
 
     onClickCopyAddress(event) {
@@ -46,10 +25,6 @@ export default class Account extends React.Component {
         selection.removeAllRanges()
     }
 
-    componentDidMount() {
-        $('[data-toggle="tooltip"]').tooltip()
-    }
-
     render() {
         return (
             <div>
@@ -57,16 +32,12 @@ export default class Account extends React.Component {
                     <button
                         type="button"
                         className="btn btn-light"
-                        data-toggle="tooltip"
-                        data-placement="bottom"
-                        title="Copy"
                         style={{lineHeight: 1}}
                         onClick={this.onClickCopyAddress}
                     >
                         <span className="text-address" style={{fontSize: '80%'}}>{this.state.address}</span>
                     </button>
                 </div>
-
                 <div className="px-3 mt-4">
                     <div className="card">
                         <div className="card-body pt-0 pb-4">

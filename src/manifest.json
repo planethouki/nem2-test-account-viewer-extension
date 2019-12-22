@@ -6,24 +6,11 @@
     "default_icon": "icon_19.png",
     "default_popup": "popup.html"
   },
-  "content_scripts": [
-    {
-      "matches": [
-        "file://*/*",
-        "http://*/*",
-        "https://*/*"
-      ],
-      "js": [
-        "contentscript.js"
-      ],
-      "run_at": "document_start",
-      "all_frames": true
-    }
-  ],
   "permissions": [
     "storage"
   ],
-  "web_accessible_resources": [
-    "inpage.js"
-  ]
+  "web_accessible_resources": [],
+  "background": {
+    "scripts": ["background.js"]
+  }
 }

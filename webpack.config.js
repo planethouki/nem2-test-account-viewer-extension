@@ -4,10 +4,11 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyPlugin = require('copy-webpack-plugin');
 
 module.exports = {
+    mode: 'development',
+    devtool: 'inline-source-map',
     entry: {
         popup: './src/popup.js',
-        inpage: './src/inpage.js',
-        contentscript: './src/contentscript.js'
+        background: './src/background.js'
     },
     plugins: [
         new CleanWebpackPlugin(),
@@ -18,15 +19,22 @@ module.exports = {
             template: "./src/popup.html"
         }),
         new CopyPlugin([
-            { from: './src/icon_19.png', to: '.' },
+            { from: './src/images/', to: '.' },
             { from: './src/manifest.json', to: '.' }
-        ]),
+        ], {copyUnmodified: true}),
     ],
     module: {
         rules: [
             {
                 test: /\.js$/,
-                use: ['babel-loader']
+                use: [
+                    {
+                        loader: 'babel-loader',
+                        options: {
+                            presets: ["@babel/preset-env", "@babel/preset-react"]
+                        }
+                    }
+                ]
             },
             {
                 test: /\.css$/,
@@ -41,4 +49,12 @@ module.exports = {
         filename: '[name].js',
         path: path.resolve(__dirname, 'dist'),
     },
+    watchOptions: {
+        ignored: /node_modules/
+    },
+    node: {
+        fs: 'empty',
+        net: 'empty',
+        tls: 'empty'
+    }
 };
