@@ -6,9 +6,13 @@ const CopyPlugin = require('copy-webpack-plugin');
 module.exports = {
     mode: 'development',
     devtool: 'inline-source-map',
+    devServer: {
+        contentBase: './dist'
+    },
     entry: {
         popup: './src/popup.js',
-        background: './src/background.js'
+        background: './src/background.js',
+        polyfill: 'babel-polyfill'
     },
     plugins: [
         new CleanWebpackPlugin(),

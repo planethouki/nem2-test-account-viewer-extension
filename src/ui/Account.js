@@ -1,21 +1,40 @@
 import React from 'react';
 import { Button, Overlay, Tooltip } from 'react-bootstrap';
-import background from '../backgroundFacade';
+import { backgroundFacade as background } from '../backgroundFacade';
+import { nemFacade as nem } from '../nemFacade';
 
 export default class Account extends React.Component {
     constructor(props) {
         super(props);
+        this.address = background.getAddress();
+        this.endPoint = background.getEndPoint();
+        this.hexMosaicId = background.getHexMosaicId();
         this.state = {
-            balance: '0',
+            balance: '-',
             transactions: [],
-            address: background.getAddress().pretty(),
-            endPoint: background.getEndPoint()
+            showCopyAddressNotify: false,
+            showCopyEndPointNotify: false
         };
-        this.onClickCopyAddress = this.onClickCopyAddress.bind(this)
+        this.refCopyAddressNotify = React.createRef();
+        this.refCopyEndPointNotify = React.createRef();
+        this.onClickCopyAddress = this.onClickCopyAddress.bind(this);
+        this.onClickCopyEndPoint = this.onClickCopyEndPoint.bind(this);
+        nem.getBalance(this.address, this.endPoint, this.hexMosaicId)
+            .then((balanceInt) => {
+                this.setState({
+                    balance: balanceInt.toString()
+                })
+            });
+        nem.getTransactions(this.address, this.endPoint)
+            .then((transactions) => {
+                this.setState({
+                    transactions: transactions.slice(0, 4)
+                })
+            })
     }
 
-    onClickCopyAddress(event) {
-        const elm = document.getElementById('copy-address');
+    onClickCopy(elementId) {
+        const elm = document.getElementById(elementId);
         const selection = window.getSelection();
         const range = document.createRange();
         range.selectNodeContents(elm);
@@ -23,6 +42,29 @@ export default class Account extends React.Component {
         selection.addRange(range);
         document.execCommand('copy');
         selection.removeAllRanges()
+    }
+
+    onClickCopyAddress(event) {
+        this.onClickCopy('copy-address');
+        this.setState(state => {
+            return { showCopyAddressNotify: true }
+        })
+        setTimeout(() => {
+            this.setState(state => {
+                return { showCopyAddressNotify: false }
+            })
+        }, 5000)
+    }
+    onClickCopyEndPoint(event) {
+        this.onClickCopy('copy-end-point');
+        this.setState(state => {
+            return { showCopyEndPointNotify: true }
+        })
+        setTimeout(() => {
+            this.setState(state => {
+                return { showCopyEndPointNotify: false }
+            })
+        }, 5000)
     }
 
     render() {
@@ -34,9 +76,20 @@ export default class Account extends React.Component {
                         className="btn btn-light"
                         style={{lineHeight: 1}}
                         onClick={this.onClickCopyAddress}
+                        ref={this.refCopyAddressNotify}
                     >
-                        <span className="text-address" style={{fontSize: '80%'}}>{this.state.address}</span>
+                        <span className="text-address" style={{fontSize: '80%'}}>{this.address}</span>
                     </button>
+                    <Overlay
+                        target={this.refCopyAddressNotify.current}
+                        show={this.state.showCopyAddressNotify}
+                        placement="bottom">
+                        {props => (
+                            <Tooltip id="overlay-copy-address-notify" {...props}>
+                                Copied!
+                            </Tooltip>
+                        )}
+                    </Overlay>
                 </div>
                 <div className="px-3 mt-4">
                     <div className="card">
@@ -46,7 +99,7 @@ export default class Account extends React.Component {
                             </div>
                             <div className="card-text d-flex justify-content-between align-items-baseline px-3">
                                 <h5>{this.state.balance}</h5>
-                                <div>xem</div>
+                                <div>nem.xem</div>
                             </div>
                         </div>
                     </div>
@@ -61,11 +114,11 @@ export default class Account extends React.Component {
                             <div className="card-text px-2 transactions-container">
                                 {this.state.transactions.map((tx) => {
                                     return (
-                                        <div className="text-truncate" style={{fontSize: '50%'}} key={tx}>{tx}</div>
+                                        <div className="text-truncate" style={{fontSize: '50%'}} key={tx.id}>{tx.hash}</div>
                                     )
                                 })}
                             </div>
-                            <div className="text-right">
+                            <div className="text-right d-none">
                                 <a href="#" style={{fontSize: '80%'}} onClick={this.onClickMoreTx}>more</a>
                             </div>
                         </div>
@@ -80,19 +133,31 @@ export default class Account extends React.Component {
                         data-toggle="dropdown"
                         aria-haspopup="true"
                         aria-expanded="false"
+                        onClick={this.onClickCopyEndPoint}
+                        ref={this.refCopyEndPointNotify}
                     >
-                        <small className="font-weight-bold">{this.state.endPoint}</small>
+                        <small className="font-weight-bold">{this.endPoint}</small>
                     </button>
-                    <div className="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                        <button className="dropdown-item" type="button">https://elephant3.48gh23s.xyz:3001</button>
-                    </div>
+                    <Overlay
+                        target={this.refCopyEndPointNotify.current}
+                        show={this.state.showCopyEndPointNotify}
+                        placement="bottom">
+                        {props => (
+                            <Tooltip id="overlay-copy-end-point-notify" {...props}>
+                                Copied!
+                            </Tooltip>
+                        )}
+                    </Overlay>
                 </div>
                 <div className="text-center px-3 mt-3">
                     <div className="alert alert-danger font-weight-bold">experimental use only</div>
                 </div>
 
                 <div id="copy-address" className="text-address text-center text-white" style={{fontSize: '10%'}}>
-                    {this.state.address}
+                    {this.address}
+                </div>
+                <div id="copy-end-point" className="text-address text-center text-white" style={{fontSize: '10%'}}>
+                    {this.endPoint}
                 </div>
             </div>
         );
