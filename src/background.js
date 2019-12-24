@@ -11,7 +11,7 @@ try {
 }
 window.setAddress = (rawAddress) => {
     window.localStorage.setItem('address', rawAddress);
-    window.address = Address.createFromRawAddress(rawAddress);
+    window.address = rawAddress;
 };
 
 
