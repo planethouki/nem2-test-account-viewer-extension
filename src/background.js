@@ -43,11 +43,29 @@ function balanceInterval() {
             if (result === false) {
                 setTimeout(balanceInterval, 10000)
             } else {
-                console.log(result)
                 window.balance = result
                 setTimeout(balanceInterval, 1000)
             }
         })
 }
 
+function transactionsInterval() {
+    return Promise.race([
+        nem.getTransactions(window.address, window.endPoint),
+        new Promise((resolve) => {
+            setTimeout(resolve, 1500, false);
+        }),
+    ])
+        .then((result) => {
+            if (result === false) {
+                setTimeout(transactionsInterval, 10000)
+            } else {
+                window.transactions = result
+                setTimeout(transactionsInterval, 1000)
+            }
+        })
+}
+
 balanceInterval();
+transactionsInterval();
+

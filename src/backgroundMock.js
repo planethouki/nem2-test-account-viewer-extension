@@ -21,5 +21,8 @@ export const methods = {
     },
     getBalance: () => {
         return 1000
+    },
+    getTransactions: () => {
+        return []
     }
 };

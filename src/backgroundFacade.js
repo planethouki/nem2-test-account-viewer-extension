@@ -22,5 +22,8 @@ export const methods = {
     },
     getBalance: () => {
         return background.window.balance
+    },
+    getTransactions: () => {
+        return background.window.transactions
     }
 };

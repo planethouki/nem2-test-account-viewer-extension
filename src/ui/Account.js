@@ -10,6 +10,7 @@ export default class Account extends React.Component {
         this.endPoint = backgroundFacade.methods.getEndPoint();
         this.hexMosaicId = backgroundFacade.methods.getHexMosaicId();
         this.balanceInterval = null;
+        this.transactionsInterval = null;
         this.state = {
             balance: '-',
             transactions: [],
@@ -20,24 +21,23 @@ export default class Account extends React.Component {
         this.refCopyEndPointNotify = React.createRef();
         this.onClickCopyAddress = this.onClickCopyAddress.bind(this);
         this.onClickCopyEndPoint = this.onClickCopyEndPoint.bind(this);
-        nem.getTransactions(this.address, this.endPoint)
-            .then((transactions) => {
-                this.setState({
-                    transactions: transactions.slice(0, 4)
-                })
-            })
     }
 
     componentDidMount() {
         this.balanceInterval = setInterval(() => {
-            const balanceInt = backgroundFacade.methods.getBalance()
             this.setState({
-                balance: balanceInt.toString()
+                balance: backgroundFacade.methods.getBalance().toString()
+            })
+        }, 1000)
+        this.transactionsInterval = setInterval(() => {
+            this.setState({
+                transactions: backgroundFacade.methods.getTransactions().slice(0, 4)
             })
         }, 1000)
     }
     componentWillUnmount() {
         clearInterval(this.balanceInterval);
+        clearInterval(this.transactionsInterval);
     }
 
     onClickCopy(elementId) {
