@@ -2,7 +2,6 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { Link } from 'react-router-dom';
 import { Button, FormControl, InputGroup } from 'react-bootstrap';
-import { backgroundFacade as background } from '../backgroundFacade';
 
 export default class Settings extends React.Component {
 

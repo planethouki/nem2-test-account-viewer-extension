@@ -2,20 +2,15 @@ const path = require('path');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyPlugin = require('copy-webpack-plugin');
+const webpack = require('webpack');
 
 module.exports = {
-    mode: 'development',
-    devtool: 'inline-source-map',
-    devServer: {
-        contentBase: './dist'
-    },
     entry: {
         popup: './src/popup.js',
         background: './src/background.js',
         polyfill: 'babel-polyfill'
     },
     plugins: [
-        new CleanWebpackPlugin(),
         new HtmlWebpackPlugin({
             title: 'Popup',
             chunks: ['popup'],
@@ -26,11 +21,13 @@ module.exports = {
             { from: './src/images/', to: '.' },
             { from: './src/manifest.json', to: '.' }
         ], {copyUnmodified: true}),
+        new CleanWebpackPlugin(),
     ],
     module: {
         rules: [
             {
                 test: /\.js$/,
+                exclude: [/node_modules/],
                 use: [
                     {
                         loader: 'babel-loader',
@@ -52,9 +49,6 @@ module.exports = {
     output: {
         filename: '[name].js',
         path: path.resolve(__dirname, 'dist'),
-    },
-    watchOptions: {
-        ignored: /node_modules/
     },
     node: {
         fs: 'empty',

@@ -1,6 +1,8 @@
 import {
     Address
 } from 'nem2-sdk'
+import { Observable } from 'rxjs'
+import { nemFacade as nem } from './nemFacade';
 
 const accountStorage = window.localStorage.getItem('address');
 const rawAddress = accountStorage || 'TDYF3Q-KKPYMX-TGZODN-D6X3O5-FLVB3G-BYMFQG-4PEU';
@@ -29,3 +31,23 @@ window.setHexMosaicId = (hexMosaicId) => {
     window.localStorage.setItem('hexMosaicId', hexMosaicId);
     window.hexMosaicId = hexMosaicId
 };
+
+function balanceInterval() {
+    return Promise.race([
+        nem.getBalance(window.address, window.endPoint, window.hexMosaicId),
+        new Promise((resolve) => {
+            setTimeout(resolve, 1500, false);
+        }),
+    ])
+        .then((result) => {
+            if (result === false) {
+                setTimeout(balanceInterval, 10000)
+            } else {
+                console.log(result)
+                window.balance = result
+                setTimeout(balanceInterval, 1000)
+            }
+        })
+}
+
+balanceInterval();

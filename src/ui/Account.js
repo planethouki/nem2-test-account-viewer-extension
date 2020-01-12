@@ -1,14 +1,15 @@
+/* global backgroundFacade */
 import React from 'react';
 import { Button, Overlay, Tooltip } from 'react-bootstrap';
-import { backgroundFacade as background } from '../backgroundFacade';
 import { nemFacade as nem } from '../nemFacade';
 
 export default class Account extends React.Component {
     constructor(props) {
         super(props);
-        this.address = background.getAddress();
-        this.endPoint = background.getEndPoint();
-        this.hexMosaicId = background.getHexMosaicId();
+        this.address = backgroundFacade.methods.getAddress();
+        this.endPoint = backgroundFacade.methods.getEndPoint();
+        this.hexMosaicId = backgroundFacade.methods.getHexMosaicId();
+        this.balanceInterval = null;
         this.state = {
             balance: '-',
             transactions: [],
@@ -19,18 +20,24 @@ export default class Account extends React.Component {
         this.refCopyEndPointNotify = React.createRef();
         this.onClickCopyAddress = this.onClickCopyAddress.bind(this);
         this.onClickCopyEndPoint = this.onClickCopyEndPoint.bind(this);
-        nem.getBalance(this.address, this.endPoint, this.hexMosaicId)
-            .then((balanceInt) => {
-                this.setState({
-                    balance: balanceInt.toString()
-                })
-            });
         nem.getTransactions(this.address, this.endPoint)
             .then((transactions) => {
                 this.setState({
                     transactions: transactions.slice(0, 4)
                 })
             })
+    }
+
+    componentDidMount() {
+        this.balanceInterval = setInterval(() => {
+            const balanceInt = backgroundFacade.methods.getBalance()
+            this.setState({
+                balance: balanceInt.toString()
+            })
+        }, 1000)
+    }
+    componentWillUnmount() {
+        clearInterval(this.balanceInterval);
     }
 
     onClickCopy(elementId) {
