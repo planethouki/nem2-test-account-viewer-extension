@@ -14,7 +14,7 @@ module.exports = merge(common, {
     },
     plugins: [
         new webpack.ProvidePlugin({
-            background: path.resolve(__dirname, './src/backgroundMock.js'),
+            background: path.resolve(__dirname, './test/backgroundMock.js'),
             nem: path.resolve(__dirname, './src/nemFacade.js'),
         }),
     ]

@@ -1,5 +1,7 @@
 /* global chrome */
 
+import transactions from './transactions.json';
+
 export const getAddress = () => {
     return 'TDYF3Q-KKPYMX-TGZODN-D6X3O5-FLVB3G-BYMFQG-4PEU'
 };
@@ -19,8 +21,17 @@ export const setHexMosaicId = (hexMosaicId) => {
 
 };
 export const getBalance = () => {
-    return 1000
+    return Math.floor(1000000 * Math.random()) / 1000
 };
 export const getTransactions = () => {
-    return []
+    return transactions
+        .map((transaction) => {
+            return {
+                hash: transaction.meta.hash,
+                id: transaction.meta.id
+            }
+        })
+        .filter(() => {
+            return Math.random() > 0.2
+        })
 };

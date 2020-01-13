@@ -38,6 +38,13 @@ module.exports = {
                 ]
             },
             {
+                test: /\.json$/,
+                type: "javascript/auto",
+                use: [
+                    'json-loader'
+                ]
+            },
+            {
                 test: /\.css$/,
                 use: [
                     'style-loader',
