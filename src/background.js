@@ -1,8 +1,9 @@
+/* global nem */
+
 import {
     Address
 } from 'nem2-sdk'
 import { Observable } from 'rxjs'
-import { nemFacade as nem } from './nemFacade';
 
 const accountStorage = window.localStorage.getItem('address');
 const rawAddress = accountStorage || 'TDYF3Q-KKPYMX-TGZODN-D6X3O5-FLVB3G-BYMFQG-4PEU';

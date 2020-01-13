@@ -6,7 +6,8 @@ module.exports = merge(common, {
     mode: 'production',
     plugins: [
         new webpack.ProvidePlugin({
-            backgroundFacade: path.resolve(__dirname, './src/backgroundFacade.js')
+            background: path.resolve(__dirname, './src/backgroundFacade.js'),
+            nem: path.resolve(__dirname, './src/nemFacade.js'),
         }),
     ]
 });

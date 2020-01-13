@@ -1,14 +1,13 @@
-/* global backgroundFacade */
+/* global background, nem */
 import React from 'react';
 import { Button, Overlay, Tooltip } from 'react-bootstrap';
-import { nemFacade as nem } from '../nemFacade';
 
 export default class Account extends React.Component {
     constructor(props) {
         super(props);
-        this.address = backgroundFacade.methods.getAddress();
-        this.endPoint = backgroundFacade.methods.getEndPoint();
-        this.hexMosaicId = backgroundFacade.methods.getHexMosaicId();
+        this.address = background.getAddress();
+        this.endPoint = background.getEndPoint();
+        this.hexMosaicId = background.getHexMosaicId();
         this.balanceInterval = null;
         this.transactionsInterval = null;
         this.state = {
@@ -26,12 +25,12 @@ export default class Account extends React.Component {
     componentDidMount() {
         this.balanceInterval = setInterval(() => {
             this.setState({
-                balance: backgroundFacade.methods.getBalance().toString()
+                balance: background.getBalance().toString()
             })
         }, 1000)
         this.transactionsInterval = setInterval(() => {
             this.setState({
-                transactions: backgroundFacade.methods.getTransactions().slice(0, 4)
+                transactions: background.getTransactions().slice(0, 4)
             })
         }, 1000)
     }
