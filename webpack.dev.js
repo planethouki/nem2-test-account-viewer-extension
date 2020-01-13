@@ -7,7 +7,9 @@ module.exports = merge(common, {
     mode: 'development',
     devtool: 'inline-source-map',
     devServer: {
-        contentBase: './dist'
+        contentBase: './dist',
+        open: true,
+        openPage: 'popup.html'
     },
     watchOptions: {
         ignored: /node_modules/
